@@ -1,0 +1,27 @@
+{
+  "name": "impostor",
+  "version": "1.0.0",
+  "description": "El juego del impostor",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/jasmine-node servidor"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LuiZete10/impostor.git"
+  },
+  "keywords": [
+    "juego"
+  ],
+  "author": "LMT",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LuiZete10/impostor/issues"
+  },
+  "homepage": "https://github.com/LuiZete10/impostor#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jasmine-node": "^3.0.0",
+    "socket.io": "^3.0.3"
+  }
+}
