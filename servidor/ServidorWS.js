@@ -10,6 +10,9 @@ function ServidorWS(){
     this.enviarATodosMenosRemitente=function(socket,nombre,mens,datos){
         socket.broadcast.to(nombre).emit(mens,datos)
     };
+    this.enviarGlobal=function(socket mens,datos){
+    	socket.broadcast.emit(socket,mens,datos);
+    };
 	this.lanzarSocketSrv=function(io,juego){
 		var cli=this;
 		io.on('connection',function(socket){		    
@@ -25,9 +28,11 @@ function ServidorWS(){
 		    	var res=juego.unirAPartida(codigo,nick);
 		    	socket.join(codigo);
 		    	var owner=juego.partidas[codigo].nickOwner;
-		  		console.log("Usuario "+nick+" se une a partida "+codigo);
-		    	cli.enviarRemitente(socket,"unidoAPartida",{"codigo":codigo,"owner":owner});
-		    	cli.enviarATodosMenosRemitente(socket,codigo,"nuevoJugador",nick);
+		  		console.log("Usuario "+res.nick+" se une a partida "+res.codigo);
+		    	cli.enviarRemitente(socket,"unidoAPartida",res);
+		    	var lista=juego.obtenerListaJugadores(codigo);
+		    	//cli.enviarATodosMenosRemitente(socket,codigo,"nuevoJugador",res.nick);
+		    	cli.enviarATodos(io, codigo, "nuevoJugador",lista);
 		    });
 
 		    socket.on('iniciarPartida',function(nick,codigo){
@@ -80,8 +85,9 @@ function ServidorWS(){
 		    });
 
 		    socket.on("obtenerEncargo",function(nick,codigo){
-		    	var res=juego.obtenerEncargo(nick,codigo);
-		    	cli.enviarRemitente(socket,"recibirEncargo",res);
+		    	var encargo=juego.partidas[codigo].usuarios[nick].encargo;
+		    	var impostor=juego.partidas[codigo].usuarios[nick].impostor;
+		    	cli.enviarRemitente(socket,"recibirEncargo",{"encargo":encargo,"impostor":impostor});
 		    });
 
 		    socket.on("atacar",function(nick,codigo,inocente){

@@ -17,6 +17,7 @@ function Juego(){
 		if (this.partidas[codigo]){
 			res=this.partidas[codigo].agregarUsuario(nick);
 		}
+		//console.log(res);
 		return res;
 	}
 	this.numeroValido=function(num){
@@ -38,12 +39,14 @@ function Juego(){
 	this.listaPartidasDisponibles=function(){
 		var lista=[];
 		var huecos=0;
+		var maximo=0;
 		for (var key in this.partidas){
 			var partida=this.partidas[key];
 			huecos=partida.obtenerHuecos();
+			maximo=partida.maximo;
 			if (huecos>0)
 			{
-			  lista.push({"codigo":key,"huecos":huecos});
+			  lista.push({"codigo":key,"huecos":huecos,"maximo":maximo});
 			}
 		}
 		return lista;
@@ -89,6 +92,9 @@ function Juego(){
 		var usr=this.partidas[codigo].usuarios[nick];
 		usr.atacar(inocente);
 	}
+	this.obtenerListaJugadores=function(codigo){
+		return this.partidas[codigo].obtenerListaJugadores();
+	}
 }
 
 function Partida(num,owner,codigo,juego){
@@ -112,8 +118,16 @@ function Partida(num,owner,codigo,juego){
 		}
 		this.usuarios[nuevo]=new Usuario(nuevo);
 		this.usuarios[nuevo].partida=this;
-		//this.comprobarMinimo();
-		return 0;
+		var numero = this.numeroJugadores()-1;
+		this.usuarios[nuevo].numJugador = numero;
+		if (this.comprobarMinimo()){
+			this.fase=new Completado();
+		}
+		return {"codigo":this.codigo,"nick":nuevo,"numJugador":numero};
+		//this.comprobarMinimo();		
+	}
+	this.obtenerListaJugadores=function(){
+		return Object.keys(this.usuarios);
 	}
 	this.obtenerHuecos=function(){
 		return this.maximo-this.numeroJugadores();
@@ -297,10 +311,10 @@ function Partida(num,owner,codigo,juego){
 function Inicial(){
 	this.nombre="inicial";
 	this.agregarUsuario=function(nick,partida){
-		partida.puedeAgregarUsuario(nick);
-		if (partida.comprobarMinimo()){
-			partida.fase=new Completado();
-		}		
+		return partida.puedeAgregarUsuario(nick);
+		// if (partida.comprobarMinimo()){
+		// 	partida.fase=new Completado();
+		// }		
 	}
 	this.iniciarPartida=function(partida){
 		console.log("Faltan jugadores");
@@ -390,6 +404,7 @@ function Usuario(nick){
 	this.nick=nick;
 	//this.juego=juego;
 	this.partida;
+	this.numJugador;
 	this.impostor=false;
 	this.encargo="ninguno";
 	this.estado=new Vivo();
