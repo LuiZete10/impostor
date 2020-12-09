@@ -3,8 +3,7 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var bodyParser = require("body-parser");
-var io = require('socket.io')(server);
-//var io = require('socket.io').listen(server);
+var io = require('socket.io').listen(server);
 
 var modelo=require("./servidor/modelo.js");
 var wss=require("./servidor/servidorWS.js");
@@ -23,6 +22,12 @@ app.get('/', function (request, response) {
     var contenido = fs.readFileSync(__dirname + "/cliente/index.html");   
     response.setHeader("Content-type", "text/html");
     response.send(contenido);    
+});
+
+app.get('/game', function (request, response) {
+    var contenido = fs.readFileSync(__dirname + "/cliente/index-game.html"); 
+    response.setHeader("Content-type", "text/html");
+    response.send(contenido); 
 });
 
 app.get("/crearPartida/:nick/:num",function(request,response){

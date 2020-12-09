@@ -117,9 +117,9 @@ function Partida(num,owner,codigo,juego){
 			contador=contador+1;
 		}
 		this.usuarios[nuevo]=new Usuario(nuevo);
-		this.usuarios[nuevo].partida=this;
-		var numero = this.numeroJugadores()-1;
-		this.usuarios[nuevo].numJugador = numero;
+		this.usuarios[nuevo].partida=this;		
+		var numero=this.numeroJugadores()-1;
+		this.usuarios[nuevo].numJugador=numero
 		if (this.comprobarMinimo()){
 			this.fase=new Completado();
 		}
@@ -127,7 +127,12 @@ function Partida(num,owner,codigo,juego){
 		//this.comprobarMinimo();		
 	}
 	this.obtenerListaJugadores=function(){
-		return Object.keys(this.usuarios);
+		var lista=[]
+		for (var key in this.usuarios){
+			var numero=this.usuarios[key].numJugador;
+			lista.push({nick:key,numJugador:numero});
+		}
+		return lista;//Object.keys(this.usuarios);
 	}
 	this.obtenerHuecos=function(){
 		return this.maximo-this.numeroJugadores();
@@ -404,8 +409,8 @@ function Usuario(nick){
 	this.nick=nick;
 	//this.juego=juego;
 	this.partida;
-	this.numJugador;
 	this.impostor=false;
+	this.numJugador;
 	this.encargo="ninguno";
 	this.estado=new Vivo();
 	this.votos=0;

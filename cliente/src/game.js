@@ -30,14 +30,15 @@ function lanzarJuego(){
   let game;// = new Phaser.Game(config);
   let cursors;
   let player;
-  var jugadores={};
+  //let player2;
+  var jugadores={}; //la colección de jugadores remotos
   let showDebug = false;
   let camera;
   var worldLayer;
   let map;
   var crear;
   var spawnPoint;
-  var recursos=[{frame:0,sprite:"ana"},{frame:3,sprite:"pepe"},{frame:6,sprite:"tom"},{frame:8,sprite:"rayo"}];
+  var recursos=[{frame:0,sprite:"ana"},{frame:3,sprite:"pepe"},{frame:6,sprite:"tom"},{frame:9,sprite:"rayo"}];
 
   function preload() {
     this.load.image("tiles", "cliente/assets/tilesets/tuxmon-sample-32px-extruded.png");
@@ -220,7 +221,7 @@ function lanzarJuego(){
         repeat: -1
       });
 
-      const anims4 = crear.anims;
+    const anims4 = crear.anims;
       anims4.create({
         key: "tom-left-walk",
         frames: anims.generateFrameNames("varios", {
@@ -317,33 +318,42 @@ function lanzarJuego(){
     // camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
     cursors = crear.input.keyboard.createCursorKeys();
+   
     lanzarJugador(ws.numJugador);
-
+    ws.estoyDentro();
   }
 
   function lanzarJugador(numJugador){
-
-    player = crear.physics.add.sprite(spawnPoint.x, spawnPoint.y,"varios",recursos[numJugador].frame);
+    player = crear.physics.add.sprite(spawnPoint.x, spawnPoint.y,"varios",recursos[numJugador].frame);    
     // Watch the player and worldLayer for collisions, for the duration of the scene:
     crear.physics.add.collider(player, worldLayer);
     //crear.physics.add.collider(player2, worldLayer);
     camera = crear.cameras.main;
     camera.startFollow(player);
     camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-
   }
 
   function lanzarJugadorRemoto(nick,numJugador){
-    var frame = recursos[numJugador].frame;
-    jugadores[nick]=crear.physics.add.sprite(spawnPoint.x, spawnPoint.y+10*numJugador,"varios",frame);   
-    crear.physics.add.collider(player2, worldLayer);
+    var frame=recursos[numJugador].frame;
+    jugadores[nick]=crear.physics.add.sprite(spawnPoint.x+15*numJugador, spawnPoint.y,"varios",frame);   
+    crear.physics.add.collider(jugadores[nick], worldLayer);
   }
 
-  function update(time, delta, numJugador) {
+  function moverRemoto(direccion,nick,numJugador)
+  {
+    const speed = 175;
+    var remoto=jugadores[nick];
+
+    if (direccion=="left"){
+      remoto.body.setVelocityX(-speed);
+    }
+  }
+
+  function update(time, delta) {
     const speed = 175;
     const prevVelocity = player.body.velocity.clone();
 
-    const nombre=recursos[numJugador].sprite;
+    const nombre=recursos[ws.numJugador].sprite;
 
     // Stop any previous movement from the last frame
     player.body.setVelocity(0);
@@ -352,6 +362,7 @@ function lanzarJuego(){
     // Horizontal movement
     if (cursors.left.isDown) {
       player.body.setVelocityX(-speed);
+      ws.movimiento("left");
     } else if (cursors.right.isDown) {
       player.body.setVelocityX(speed);
     }
