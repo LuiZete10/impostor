@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var bodyParser = require("body-parser");
-var io = require('socket.io').listen(server);
+var io = require("socket.io").listen(server);
 
 var modelo=require("./servidor/modelo.js");
 var wss=require("./servidor/servidorWS.js");
