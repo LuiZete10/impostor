@@ -6,7 +6,7 @@ var bodyParser = require("body-parser");
 var io = require("socket.io").listen(server);
 
 var modelo=require("./servidor/modelo.js");
-var wss=require("./servidor/servidorWS.js");
+var wss=require("./servidor/ServidorWS.js");
 
 var servidorWS=new wss.ServidorWS();
 
