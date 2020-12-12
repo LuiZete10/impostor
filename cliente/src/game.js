@@ -38,7 +38,8 @@ function lanzarJuego(){
   let map;
   var crear;
   var spawnPoint;
-  var recursos=[{frame:0,sprite:"gold"},{frame:3,sprite:"misty"},{frame:6,sprite:"rojo"},{frame:9,sprite:"blanca"},{frame:12,sprite:"azul"}];
+  var recursos=[{frame:0,sprite:"gold"},{frame:3,sprite:"misty"},{frame:6,sprite:"rojo"},{frame:9,sprite:"blanca"},{frame:12,sprite:"azul"},
+                {frame:60,sprite:"debora"},{frame:63,sprite:"maximo"},{frame:66,sprite:"sachiko"},{frame:69,sprite:"brock"},{frame:72,sprite:"kimono"}];
 
   function preload() {
     this.load.image("tiles", "cliente/assets/tilesets/tuxmon-sample-32px-extruded.png");
@@ -94,8 +95,8 @@ function lanzarJuego(){
         key: "gold-left-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
-          start: 3,
-          end: 5,
+          start: 15,
+          end: 17,
           //zeroPad: 3
         }),
         //frameRate: 10,
@@ -105,15 +106,15 @@ function lanzarJuego(){
         key: "gold-right-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
-          start: 6,
-          end: 8,
+          start: 30,
+          end: 32,
           //zeroPad: 3
         }),
         //frameRate: 10,
         repeat: -1
       });
       anims.create({
-        key: "gold-front-walk",
+        key: "gold-back-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
           start: 0,
@@ -124,11 +125,11 @@ function lanzarJuego(){
         repeat: -1
       });
       anims.create({
-        key: "gold-back-walk",
+        key: "gold-front-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
-          start: 9,
-          end: 11,
+          start: 45,
+          end: 47,
           //zeroPad: 3
         }),
         //frameRate: 10,
@@ -139,36 +140,36 @@ function lanzarJuego(){
       anims2.create({
         key: "misty-left-walk",
         frames: anims.generateFrameNames("varios", {
-          start: 36,
-          end: 38,
+          start: 18,
+          end: 20,
         }),
         repeat: -1
       });
       anims2.create({
         key: "misty-right-walk",
         frames: anims.generateFrameNames("varios", {
-          start: 12,
-          end: 14,
+          start: 33,
+          end: 35,
         }),
-        repeat: -1
-      });
-      anims2.create({
-        key: "misty-front-walk",
-        frames: anims.generateFrameNames("varios", {
-          //prefix: "misa-left-walk.",
-          start: 24,
-          end: 26,
-          //zeroPad: 3
-        }),
-        //frameRate: 10,
         repeat: -1
       });
       anims2.create({
         key: "misty-back-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
-          start: 0,
-          end: 2,
+          start: 3,
+          end: 5,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims2.create({
+        key: "misty-front-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 48,
+          end: 50,
           //zeroPad: 3
         }),
         //frameRate: 10,
@@ -180,8 +181,8 @@ function lanzarJuego(){
         key: "rojo-left-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
-          start: 39,
-          end: 41,
+          start: 21,
+          end: 23,
           //zeroPad: 3
         }),
         //frameRate: 10,
@@ -191,19 +192,8 @@ function lanzarJuego(){
         key: "rojo-right-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
-          start: 15,
-          end: 17,
-          //zeroPad: 3
-        }),
-        //frameRate: 10,
-        repeat: -1
-      });
-      anims3.create({
-        key: "rojo-front-walk",
-        frames: anims.generateFrameNames("varios", {
-          //prefix: "misa-left-walk.",
-          start: 27,
-          end: 29,
+          start: 36,
+          end: 38,
           //zeroPad: 3
         }),
         //frameRate: 10,
@@ -213,8 +203,19 @@ function lanzarJuego(){
         key: "rojo-back-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
-          start: 3,
-          end: 5,
+          start: 6,
+          end: 8,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims3.create({
+        key: "rojo-front-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 51,
+          end: 53,
           //zeroPad: 3
         }),
         //frameRate: 10,
@@ -226,8 +227,8 @@ function lanzarJuego(){
         key: "blanca-left-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
-          start: 39,
-          end: 41,
+          start: 24,
+          end: 26,
           //zeroPad: 3
         }),
         //frameRate: 10,
@@ -237,19 +238,8 @@ function lanzarJuego(){
         key: "blanca-right-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
-          start: 15,
-          end: 17,
-          //zeroPad: 3
-        }),
-        //frameRate: 10,
-        repeat: -1
-      });
-      anims4.create({
-        key: "blanca-front-walk",
-        frames: anims.generateFrameNames("varios", {
-          //prefix: "misa-left-walk.",
-          start: 27,
-          end: 29,
+          start: 39,
+          end: 41,
           //zeroPad: 3
         }),
         //frameRate: 10,
@@ -259,8 +249,19 @@ function lanzarJuego(){
         key: "blanca-back-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
-          start: 3,
-          end: 5,
+          start: 9,
+          end: 11,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims4.create({
+        key: "blanca-front-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 54,
+          end: 56,
           //zeroPad: 3
         }),
         //frameRate: 10,
@@ -272,8 +273,8 @@ function lanzarJuego(){
         key: "azul-left-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
-          start: 39,
-          end: 41,
+          start: 27,
+          end: 29,
           //zeroPad: 3
         }),
         //frameRate: 10,
@@ -283,19 +284,8 @@ function lanzarJuego(){
         key: "azul-right-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
-          start: 15,
-          end: 17,
-          //zeroPad: 3
-        }),
-        //frameRate: 10,
-        repeat: -1
-      });
-      anims5.create({
-        key: "azul-front-walk",
-        frames: anims.generateFrameNames("varios", {
-          //prefix: "misa-left-walk.",
-          start: 27,
-          end: 29,
+          start: 42,
+          end: 44,
           //zeroPad: 3
         }),
         //frameRate: 10,
@@ -305,8 +295,243 @@ function lanzarJuego(){
         key: "azul-back-walk",
         frames: anims.generateFrameNames("varios", {
           //prefix: "misa-left-walk.",
-          start: 3,
-          end: 5,
+          start: 12,
+          end: 14,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims5.create({
+        key: "azul-front-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 57,
+          end: 59,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+
+      const anims6 = crear.anims;
+      anims6.create({
+        key: "debora-left-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+15,
+          end: 60+17,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims6.create({
+        key: "debora-right-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+30,
+          end: 60+32,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims6.create({
+        key: "debora-back-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+0,
+          end: 60+2,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims6.create({
+        key: "debora-front-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+45,
+          end: 60+47,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+
+      const anims7 = crear.anims;
+      anims7.create({
+        key: "maximo-left-walk",
+        frames: anims.generateFrameNames("varios", {
+          start: 60+18,
+          end: 60+20,
+        }),
+        repeat: -1
+      });
+      anims7.create({
+        key: "maximo-right-walk",
+        frames: anims.generateFrameNames("varios", {
+          start: 60+33,
+          end: 60+35,
+        }),
+        repeat: -1
+      });
+      anims7.create({
+        key: "maximo-back-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+3,
+          end: 60+5,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims7.create({
+        key: "maximo-front-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+48,
+          end: 60+50,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+
+      const anims8 = crear.anims;
+      anims8.create({
+        key: "sachiko-left-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+21,
+          end: 60+23,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims8.create({
+        key: "sachiko-right-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+36,
+          end: 60+38,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims8.create({
+        key: "sachiko-back-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+6,
+          end: 60+8,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims8.create({
+        key: "sachiko-front-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+51,
+          end: 60+53,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+
+    const anims9 = crear.anims;
+      anims9.create({
+        key: "brock-left-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+24,
+          end: 60+26,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims9.create({
+        key: "brock-right-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+39,
+          end: 60+41,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims9.create({
+        key: "brock-back-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+9,
+          end: 60+11,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims9.create({
+        key: "brock-front-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+54,
+          end: 60+56,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+
+      const anims10 = crear.anims;
+      anims10.create({
+        key: "kimono-left-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+27,
+          end: 60+29,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims10.create({
+        key: "kimono-right-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+42,
+          end: 60+44,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims10.create({
+        key: "kimono-back-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+12,
+          end: 60+14,
+          //zeroPad: 3
+        }),
+        //frameRate: 10,
+        repeat: -1
+      });
+      anims10.create({
+        key: "kimono-front-walk",
+        frames: anims.generateFrameNames("varios", {
+          //prefix: "misa-left-walk.",
+          start: 60+57,
+          end: 60+59,
           //zeroPad: 3
         }),
         //frameRate: 10,
