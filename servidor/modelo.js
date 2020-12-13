@@ -462,7 +462,7 @@ function Usuario(nick){
 function Vivo(){
 	this.nombre="vivo";
 	this.esAtacado=function(usr){
-		usr.estado=new Muerto();
+		usr.estado=new Fantasma();
 		usr.partida.comprobarFinal();
 	}
 	this.lanzarVotacion=function(usr){
@@ -470,11 +470,21 @@ function Vivo(){
 	}
 }
 
-function Muerto(){
-	this.nombre="muerto";
-	this.esAtacado=function(usr){}
-	this.lanzarVotacion=function(usr){}
-}
+function Fantasma(){
+	this.nombre = "fantasma";
+
+	this.atacar = function(nick,partida){
+		//partida.atacar(nick);
+	}
+
+	this.recibeAtaque = function(usuario){
+		console.log("Los fantasma estan muertos")
+	}
+
+	this.lanzarVotacion = function(usr){
+		//no puede votar
+	}
+};
 
 function randomInt(low, high) {
 	return Math.floor(Math.random() * (high - low) + low);

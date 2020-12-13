@@ -4,6 +4,7 @@ function ClienteWS(){
 	this.codigo=undefined;
 	this.owner=false;
 	this.numJugador=undefined;
+	this.impostor=false;
 	this.ini=function(){
 		this.socket=io.connect();
 		this.lanzarSocketSrv();
@@ -37,14 +38,21 @@ function ClienteWS(){
 	this.votar=function(sospechoso){
 		this.socket.emit("votar",this.nick,this.codigo,sospechoso);
 	}
+	this.finalVotacion=function(){
+		this.socket.emit("finalVotacion",this.nick,this.codigo);
+	}
+	this.haVotado=function(){
+		this.socket.emit("haVotado",this.nick,this.codigo);
+	}
 	this.obtenerEncargo=function(){
 		this.socket.emit("obtenerEncargo",this.nick,this.codigo);
 	}
 	this.atacar=function(inocente){
 		this.socket.emit("atacar",this.nick,this.codigo,inocente);
 	}
-	this.movimiento=function(direccion){
-		this.socket.emit("movimiento",this.nick,this.codigo,this.numJugador,direccion);
+	this.movimiento=function(direccion,x,y){
+		var datos={nick:this.nick,codigo:this.codigo,numJugador:this.numJugador,direccion:direccion,x:x,y:y};
+		this.socket.emit("movimiento",datos);
 	}
 
 	//servidor WS dentro del cliente
@@ -95,14 +103,14 @@ function ClienteWS(){
 		this.socket.on('dibujarRemoto',function(lista){
 			console.log(lista);
 			for(var i=0;i<lista.length;i++){
-				if (lista[i].nick!=cli.nick){
+				if(lista[i].nick!=cli.nick){
 					lanzarJugadorRemoto(lista[i].nick,lista[i].numJugador);
 				}
 			}
 		});
 		this.socket.on("moverRemoto",function(datos){
-			moverRemoto(datos.direccion,datos.nick,datos.numJugador);
-		})
+			mover(datos);
+		});
 		this.socket.on("votacion",function(data){
 			console.log(data);
 		});
@@ -114,12 +122,17 @@ function ClienteWS(){
 		});
 		this.socket.on("recibirEncargo",function(data){
 			console.log(data);
+			cli.impostor=data.impostor;
+			if(data.impostor){
+				$('#avisarImpostor').modal("show");
+				crearColision();
+			}
 		});
 		this.socket.on("final",function(data){
 			console.log(data);
 		});
-		this.socket.on("muereInocente",function(data){
-			console.log(data);
+		this.socket.on("muereInocente",function(atacado){
+			console.log(atacado+" ha sido atacado");
 		});
 	}
 
