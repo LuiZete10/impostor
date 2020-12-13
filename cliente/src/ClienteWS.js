@@ -5,6 +5,8 @@ function ClienteWS(){
 	this.owner=false;
 	this.numJugador=undefined;
 	this.impostor=false;
+	this.estado;
+	this.encargo;
 	this.ini=function(){
 		this.socket=io.connect();
 		this.lanzarSocketSrv();
@@ -67,6 +69,7 @@ function ClienteWS(){
 			if (data.codigo!="fallo"){
 				cli.owner=true;
 				cli.numJugador=0;
+				cli.estado="vivo";
 				cw.mostrarEsperandoRival();
 			}
 		});
@@ -74,6 +77,7 @@ function ClienteWS(){
 			cli.codigo=data.codigo;
 			cli.nick=data.nick;
 			cli.numJugador=data.numJugador;
+			cli.estado="vivo";
 			console.log(data);
 			cw.mostrarEsperandoRival();
 		});
@@ -107,6 +111,7 @@ function ClienteWS(){
 					lanzarJugadorRemoto(lista[i].nick,lista[i].numJugador);
 				}
 			}
+			crearColision();
 		});
 		this.socket.on("moverRemoto",function(datos){
 			mover(datos);
@@ -126,6 +131,8 @@ function ClienteWS(){
 			if(data.impostor){
 				$('#avisarImpostor').modal("show");
 				crearColision();
+			}else{
+				cli.encargo=data.encargo;
 			}
 		});
 		this.socket.on("final",function(data){
@@ -133,6 +140,10 @@ function ClienteWS(){
 		});
 		this.socket.on("muereInocente",function(atacado){
 			console.log(atacado+" ha sido atacado");
+			if(cli.nick==inocente){
+				cli.estado="fantasma";
+			}
+			dibujarMuereInocente(inocente);
 		});
 	}
 

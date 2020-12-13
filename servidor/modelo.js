@@ -1,4 +1,5 @@
 function Juego(){
+	//this.min = min;
 	this.partidas={};
 	this.crearPartida=function(num,owner){
 		let codigo="fallo";
@@ -21,6 +22,7 @@ function Juego(){
 		return res;
 	}
 	this.numeroValido=function(num){
+		//return (num>=min && num<=10)
 		return (num>=4 && num<=10)
 	}
 	this.obtenerCodigo=function(){
@@ -89,6 +91,7 @@ function Juego(){
 		return res;
 	}
 	this.atacar=function(nick,codigo,inocente){
+		console.log(nick + " quiere atacar a " + inocente + " siendo " + nick + ", un " + this.partidas[codigo].usuarios[nick].estado.nombre + " y el otro un " + this.partidas[codigo].usuarios[inocente].estado.nombre);
 		var usr=this.partidas[codigo].usuarios[nick];
 		usr.atacar(inocente);
 	}
@@ -119,7 +122,7 @@ function Partida(num,owner,codigo,juego){
 		this.usuarios[nuevo]=new Usuario(nuevo);
 		this.usuarios[nuevo].partida=this;		
 		var numero=this.numeroJugadores()-1;
-		this.usuarios[nuevo].numJugador=numero
+		this.usuarios[nuevo].numJugador=numero;
 		if (this.comprobarMinimo()){
 			this.fase=new Completado();
 		}
@@ -142,6 +145,7 @@ function Partida(num,owner,codigo,juego){
 	}
 	this.comprobarMinimo=function(){
 		return this.numeroJugadores()>=4
+		//return this.numeroJugadores()>=this.juego.min;
 	}
 	this.comprobarMaximo=function(){
 		return this.numeroJugadores()<this.maximo;
@@ -473,11 +477,11 @@ function Vivo(){
 function Fantasma(){
 	this.nombre = "fantasma";
 
-	this.atacar = function(nick,partida){
-		//partida.atacar(nick);
-	}
+	// this.atacar = function(nick,partida){
+	// 	//partida.atacar(nick);
+	// }
 
-	this.recibeAtaque = function(usuario){
+	this.esAtacado = function(usr){
 		console.log("Los fantasma estan muertos")
 	}
 

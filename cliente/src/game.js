@@ -29,7 +29,7 @@ function lanzarJuego(){
 
   let game;// = new Phaser.Game(config);
   let cursors;
-  let player;
+  var player;
   //let player2;
   var jugadores={}; //la colección de jugadores remotos
   let showDebug = false;
@@ -40,6 +40,9 @@ function lanzarJuego(){
   var spawnPoint;
   var recursos=[{frame:0,sprite:"gold"},{frame:3,sprite:"misty"},{frame:6,sprite:"rojo"},{frame:9,sprite:"blanca"},{frame:12,sprite:"azul"},
                 {frame:60,sprite:"debora"},{frame:63,sprite:"maximo"},{frame:66,sprite:"sachiko"},{frame:69,sprite:"brock"},{frame:72,sprite:"kimono"}];
+  var remotos;
+  var muertos;
+  var capaTareas;
 
   function preload() {
     this.load.image("tiles", "cliente/assets/tilesets/tuxmon-sample-32px-extruded.png");
@@ -54,6 +57,7 @@ function lanzarJuego(){
     //this.load.spritesheet("gabe","cliente/assets/images/gabe.png",{frameWidth:24,frameHeight:24});
     //this.load.spritesheet("gabe","cliente/assets/images/male01-2.png",{frameWidth:32,frameHeight:32});
     this.load.spritesheet("varios","cliente/assets/atlas/personajes.png",{frameWidth:32,frameHeight:32});
+    this.load.spritesheet("tumba","cliente/assets/atlas/tumba.png",{frameWidth:32,frameHeight:32});
   }
 
   function create() {
@@ -544,8 +548,10 @@ function lanzarJuego(){
 
     cursors = crear.input.keyboard.createCursorKeys();
     remotos = crear.add.group();
+    muertos = crear.add.group();
     teclaA=crear.input.keyboard.addKey('a');
-   
+    teclaV=crear.input.keyboard.addKey('v');
+    teclaT=crear.input.keyboard.addKey('t');
     lanzarJugador(ws.numJugador);
     ws.estoyDentro();
   }
@@ -556,13 +562,28 @@ function lanzarJuego(){
     }
   }
   function kill(sprite,inocente){
-    //dibujar el sprite inocente muerto
-    //avisar al servidor del ataque
     var nick = inocente.nick;
     if(teclaA.isDown){
       ws.atacar(nick);
     }
   }
+
+  function dibujarMuereInocente(inocente){
+    var x=jugadores[inocente].x;
+    var y=jugadores[inocente].y;
+    var numJugador=jugadores[inocente].numJugador;
+
+    var muerto = crear.physics.add.sprite(x, y,"tumba",recursos[numJugador].frame);
+    muertos.add(muerto);
+
+    crear.physics.add.overlap(player,muertos,votacion);
+  }
+
+  // function votacion(muerto){
+  //   if(teclaV.isDown){
+  //     ws.lanzarVotacion();
+  //   }
+  // }
 
   function lanzarJugador(numJugador){
     player = crear.physics.add.sprite(spawnPoint.x, spawnPoint.y,"varios",recursos[numJugador].frame);    

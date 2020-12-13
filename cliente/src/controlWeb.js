@@ -1,6 +1,7 @@
 function ControlWeb($){
 
 	this.mostrarCrearPartida=function(){
+		var min=4;
 		var cadena='<div id="mostrarCP"><h3>Crear partida</h3>';
 		cadena=cadena+'<div class="form-group">';
 		cadena=cadena+'<label for="nick">Nick:</label>';
@@ -8,7 +9,7 @@ function ControlWeb($){
 		cadena=cadena+'</div>';
 		cadena=cadena+'<div class="form-group">';
 		cadena=cadena+'<label for="num">Número:</label>';
-		cadena=cadena+'<input type="number" min="4" max="10" value="4" class="form-control" id="num">';
+		cadena=cadena+'<input type="number" min="'+min+'" max="10" value="'+min+'" class="form-control" id="num">';
 		cadena=cadena+'</div>';
 		cadena=cadena+'<button type="button" id="btnCrear" class="btn btn-primary">Crear partida</button>';
 		cadena=cadena+'</div>';
