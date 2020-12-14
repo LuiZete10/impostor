@@ -552,7 +552,7 @@ function lanzarJuego(){
     teclaA=crear.input.keyboard.addKey('a');
     teclaV=crear.input.keyboard.addKey('v');
     teclaT=crear.input.keyboard.addKey('t');
-    lanzarJugador(ws.numJugador);
+    lanzarJugador(ws.nick,ws.numJugador);
     ws.estoyDentro();
   }
 
@@ -573,23 +573,26 @@ function lanzarJuego(){
     var y=jugadores[inocente].y;
     var numJugador=jugadores[inocente].numJugador;
 
-    var muerto = crear.physics.add.sprite(x, y,"tumba",recursos[numJugador].frame);
+    var muerto = crear.physics.add.sprite(x, y,"tumba",0);
     muertos.add(muerto);
 
     crear.physics.add.overlap(player,muertos,votacion);
   }
 
-  // function votacion(muerto){
-  //   if(teclaV.isDown){
-  //     ws.lanzarVotacion();
-  //   }
-  // }
+  function votacion(muerto){
+    if(teclaV.isDown){
+      ws.lanzarVotacion();
+    }
+  }
 
-  function lanzarJugador(numJugador){
-    player = crear.physics.add.sprite(spawnPoint.x, spawnPoint.y,"varios",recursos[numJugador].frame);    
+  function lanzarJugador(nick,numJugador){
+    player = crear.physics.add.sprite(spawnPoint.x+15*numJugador, spawnPoint.y,"varios",recursos[numJugador].frame);    
     // Watch the player and worldLayer for collisions, for the duration of the scene:
     crear.physics.add.collider(player, worldLayer);
     //crear.physics.add.collider(player2, worldLayer);
+    jugadores[nick] = player;
+    jugadores[nick].nick = nick;
+    jugadores[nick].numJugador=numJugador;
     camera = crear.cameras.main;
     camera.startFollow(player);
     camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -599,8 +602,9 @@ function lanzarJuego(){
     var frame=recursos[numJugador].frame;
     jugadores[nick]=crear.physics.add.sprite(spawnPoint.x+15*numJugador, spawnPoint.y,"varios",frame);   
     crear.physics.add.collider(jugadores[nick], worldLayer);
-    remotos.add(jugadores[nick]);
     jugadores[nick].nick=nick;
+    jugadores[nick].numJugador=numJugador;
+    remotos.add(jugadores[nick]);
   }
 
   function mover(datos){

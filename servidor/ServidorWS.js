@@ -109,7 +109,7 @@ function ServidorWS(){
 		    	juego.atacar(nick,codigo,inocente);
 		    	var partida=juego.partidas[codigo];
 		    	var fase=partida.fase.nombre;
-		    	cli.enviarATodos(io,socket,"muereInocente",inocente);
+		    	cli.enviarATodos(io,codigo,"muereInocente",inocente);
 			    if (fase=="final"){
 			    	cli.enviarATodos(io, codigo, "final","ganan impostores");
 			    }

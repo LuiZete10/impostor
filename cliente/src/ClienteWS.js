@@ -138,8 +138,8 @@ function ClienteWS(){
 		this.socket.on("final",function(data){
 			console.log(data);
 		});
-		this.socket.on("muereInocente",function(atacado){
-			console.log(atacado+" ha sido atacado");
+		this.socket.on("muereInocente",function(inocente){
+			console.log(inocente+" ha sido atacado");
 			if(cli.nick==inocente){
 				cli.estado="fantasma";
 			}
