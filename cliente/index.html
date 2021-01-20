@@ -8,8 +8,8 @@
 	<script src="cliente/lib/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 	<script src="//cdn.jsdelivr.net/npm/phaser@3.16.2/dist/phaser.js"></script>
-	<script src="cliente/src/ClienteRest.js"></script>
-	<script src="cliente/src/ClienteWS.js"></script>
+	<script src="cliente/src/clienteRest.js"></script>
+	<script src="cliente/src/clienteWS.js"></script>
 	<script src="cliente/src/controlWeb.js"></script>
 	<script src="cliente/src/game.js"></script>
 	<style>
@@ -34,23 +34,22 @@
 		  <div id="listaEsperando"></div>
 	    </div>
 	    <div class="row">
+	    	<div id="funcionPartida"></div>
 	    	<div id="game-container"></div>
 	    </div>
-	    <div class="modal" id="avisarImpostor" tabindex="-1" role="dialog">
+	    <div class="modal" id="modalGeneral" tabindex="-1" role="dialog">
 		  <div class="modal-dialog" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header">
-		        <h5 class="modal-title">Impostor App</h5>
+		        <h5 class="modal-title">ImpostorApp</h5>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
 		      </div>
-		      <div class="modal-body">
-		        <p>Eres el impostor</p>
+		      <div class="modal-body" id="contenidoModal">
 		      </div>
-		      <div class="modal-footer">
-		        <!--button type="button" class="btn btn-primary">Save changes</button-->
-		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+		      <div class="modal-footer" id="pie">
+		        <!--<button type="button" class="btn btn-primary">Save changes</button>-->		        
 		      </div>
 		    </div>
 		  </div>

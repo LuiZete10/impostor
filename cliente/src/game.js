@@ -10,8 +10,8 @@ function lanzarJuego(){
 
   const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 600,
+    height: 500,
     parent: "game-container",
     pixelArt: true,
     physics: {
@@ -43,6 +43,10 @@ function lanzarJuego(){
   var remotos;
   var muertos;
   var capaTareas;
+  var tareasOn=true;
+  var ataquesOn=true;
+  var final=false;
+
 
   function preload() {
     this.load.image("tiles", "cliente/assets/tilesets/tuxmon-sample-32px-extruded.png");
@@ -72,8 +76,9 @@ function lanzarJuego(){
     const belowLayer = map.createStaticLayer("Below Player", tileset, 0, 0);
     worldLayer = map.createStaticLayer("World", tileset, 0, 0);
     const aboveLayer = map.createStaticLayer("Above Player", tileset, 0, 0);
-
+    // capaTareas = map.createStaticLayer("capaTareas", tileset, 0, 0);
     worldLayer.setCollisionByProperty({ collides: true });
+    //capaTareas.setCollisionByProperty({ collides: true });
 
     // By default, everything gets depth sorted on the screen in the order we created things. Here, we
     // want the "Above Player" layer to sit on top of the player, so we explicitly give it a depth.
@@ -558,12 +563,14 @@ function lanzarJuego(){
 
   function crearColision(){
     if(ws.impostor && crear){
-      crear.physics.add.overlap(player,remotos,kill);
+      crear.physics.add.overlap(player,remotos,kill,()=>{return ataquesOn});
     }
   }
+
   function kill(sprite,inocente){
     var nick = inocente.nick;
-    if(teclaA.isDown){
+    if(teclaA.isDown && ws.estado=="vivo"){
+      ataquesOn=false;
       ws.atacar(nick);
     }
   }
@@ -575,13 +582,31 @@ function lanzarJuego(){
 
     var muerto = crear.physics.add.sprite(x, y,"tumba",0);
     muertos.add(muerto);
-
+    if(ws.nick!=inocente){
+      jugadores[inocente].visible=false;
+    }
     crear.physics.add.overlap(player,muertos,votacion);
   }
 
   function votacion(muerto){
-    if(teclaV.isDown){
+    if(teclaV.isDown && ws.estado=="vivo"){
       ws.lanzarVotacion();
+    }
+  }
+
+  function borrarTumbas(){
+    var i = 0;
+    for(i=0;i<muertos.children.size;i++){
+      muertos.children.entries[0].destroy();
+    }
+  }
+
+  function tareas(sprite,objeto){
+    if (ws.encargo==objeto.properties.tarea && teclaT.isDown){
+      tareasOn=false;      
+      console.log("realizar tarea "+ws.encargo);
+      ws.realizarTarea(); //o hacer la llamada dentro de cw
+      cw.mostrarModalTarea(ws.encargo);
     }
   }
 
@@ -589,7 +614,7 @@ function lanzarJuego(){
     player = crear.physics.add.sprite(spawnPoint.x+15*numJugador, spawnPoint.y,"varios",recursos[numJugador].frame);    
     // Watch the player and worldLayer for collisions, for the duration of the scene:
     crear.physics.add.collider(player, worldLayer);
-    //crear.physics.add.collider(player2, worldLayer);
+    //crear.physics.add.collider(player, capaTareas,tareas,()=>{return tareasOn});
     jugadores[nick] = player;
     jugadores[nick].nick = nick;
     jugadores[nick].numJugador=numJugador;
@@ -617,22 +642,32 @@ function lanzarJuego(){
     const speed = 175;
     const nombre=recursos[numJugador].sprite;
     if (remoto){
-      remoto.body.setVelocity(0);
-      remoto.setX(x);
-      remoto.setY(y);
-      remoto.body.velocity.normalize().scale(speed);
-      if (direccion=="left") {
-        remoto.anims.play(nombre+"-left-walk", true);
-      } else if (direccion=="right") {
-        remoto.anims.play(nombre+"-right-walk", true);
-      } else if (direccion=="up") {
-        remoto.anims.play(nombre+"-back-walk", true);
-      } else if (direccion=="down") {
-        remoto.anims.play(nombre+"-front-walk", true);
+      if(datos.estado!="fantasma"||ws.estado=="fantasma"){
+        remoto.body.setVelocity(0);
+        remoto.setX(x);
+        remoto.setY(y);
+        remoto.body.velocity.normalize().scale(speed);
+        if (direccion=="left") {
+          remoto.anims.play(nombre+"-left-walk", true);
+        } else if (direccion=="right") {
+          remoto.anims.play(nombre+"-right-walk", true);
+        } else if (direccion=="up") {
+          remoto.anims.play(nombre+"-back-walk", true);
+        } else if (direccion=="down") {
+          remoto.anims.play(nombre+"-front-walk", true);
+        } else {
+          remoto.anims.stop();
+        }
       } else {
-        remoto.anims.stop();
+        remoto.visible=false;
       }
     }
+  }
+
+  function finPartida(data){
+    final=true;
+    //remoto=undefined;
+    cw.mostrarModalSimple("Fin de la partida "+data);
   }
 
   // function moverRemoto(direccion,nick,numJugador)
@@ -650,49 +685,56 @@ function lanzarJuego(){
     const prevVelocity = player.body.velocity.clone();
     var direccion="stop";
     const nombre=recursos[ws.numJugador].sprite;
-
-    // Stop any previous movement from the last frame
-    player.body.setVelocity(0);
-    //player2.body.setVelocity(0);
-
-    // Horizontal movement
-    if (cursors.left.isDown) {
-      player.body.setVelocityX(-speed);
-      direccion="left";
-    } else if (cursors.right.isDown) {
-      player.body.setVelocityX(speed);
-      direccion="right";
+    if(ws.estado=="fantasma"){
+      for(var nick in jugadores){
+        jugadores[nick].visible=true;
+      }
     }
+    if (!final){
+      // Stop any previous movement from the last frame
+      player.body.setVelocity(0);
+      //player2.body.setVelocity(0);
 
-    // Vertical movement
-    if (cursors.up.isDown) {
-      player.body.setVelocityY(-speed);
-      direccion="up";
-    } else if (cursors.down.isDown) {
-      player.body.setVelocityY(speed);
-      direccion="down";
-    }
+      // Horizontal movement
+      if (cursors.left.isDown) {
+        player.body.setVelocityX(-speed);
+        direccion="left";
+      } else if (cursors.right.isDown) {
+        player.body.setVelocityX(speed);
+        direccion="right";
+      }
 
-    // Normalize and scale the velocity so that player can't move faster along a diagonal
-    player.body.velocity.normalize().scale(speed);
-    ws.movimiento(direccion,player.x,player.y);
-    
-    // Update the animation last and give left/right animations precedence over up/down animations
-    if (cursors.left.isDown) {
-      player.anims.play(nombre+"-left-walk", true);
-    } else if (cursors.right.isDown) {
-      player.anims.play(nombre+"-right-walk", true);
-    } else if (cursors.up.isDown) {
-      player.anims.play(nombre+"-back-walk", true);
-    } else if (cursors.down.isDown) {
-      player.anims.play(nombre+"-front-walk", true);
-    } else {
-      player.anims.stop();
+      // Vertical movement
+      if (cursors.up.isDown) {
+        player.body.setVelocityY(-speed);
+        direccion="up";
+      } else if (cursors.down.isDown) {
+        player.body.setVelocityY(speed);
+        direccion="down";
+      }
 
-      // If we were moving, pick and idle frame to use
-      // if (prevVelocity.x < 0) player.setTexture("gabe", "gabe-left-walk");
-      // else if (prevVelocity.x > 0) player.setTexture("gabe", "gabe-right-walk");
-      // else if (prevVelocity.y < 0) player.setTexture("gabe", "gabe-back-walk");
-      // else if (prevVelocity.y > 0) player.setTexture("gabe", "gabe-front-walk");
+      // Normalize and scale the velocity so that player can't move faster along a diagonal
+      player.body.velocity.normalize().scale(speed);
+
+      ws.movimiento(direccion,player.x,player.y);
+
+      // Update the animation last and give left/right animations precedence over up/down animations
+      if (cursors.left.isDown) {
+        player.anims.play(nombre+"-left-walk", true);
+      } else if (cursors.right.isDown) {
+        player.anims.play(nombre+"-right-walk", true);
+      } else if (cursors.up.isDown) {
+        player.anims.play(nombre+"-back-walk", true);
+      } else if (cursors.down.isDown) {
+        player.anims.play(nombre+"-front-walk", true);
+      } else {
+        player.anims.stop();
+
+        // If we were moving, pick and idle frame to use
+        // if (prevVelocity.x < 0) player.setTexture("gabe", "gabe-left-walk");
+        // else if (prevVelocity.x > 0) player.setTexture("gabe", "gabe-right-walk");
+        // else if (prevVelocity.y < 0) player.setTexture("gabe", "gabe-back-walk");
+        // else if (prevVelocity.y > 0) player.setTexture("gabe", "gabe-front-walk");
+      }
     }
   }

@@ -53,10 +53,12 @@ function ClienteWS(){
 		this.socket.emit("atacar",this.nick,this.codigo,inocente);
 	}
 	this.movimiento=function(direccion,x,y){
-		var datos={nick:this.nick,codigo:this.codigo,numJugador:this.numJugador,direccion:direccion,x:x,y:y};
+		var datos={nick:this.nick,codigo:this.codigo,numJugador:this.numJugador,direccion:direccion,x:x,y:y,estado:this.estado};
 		this.socket.emit("movimiento",datos);
 	}
-
+	this.realizarTarea=function(){
+		this.socket.emit("realizarTarea",this.nick,this.codigo);
+	}
 	//servidor WS dentro del cliente
 	this.lanzarSocketSrv=function(){
 		var cli=this;
@@ -90,6 +92,7 @@ function ClienteWS(){
 			console.log("Partida en fase: "+fase);
 			if (fase=="jugando"){
 				cli.obtenerEncargo();
+				cli.estado="vivo";
 				cw.limpiar();
 				lanzarJuego();
 			}
@@ -116,27 +119,50 @@ function ClienteWS(){
 		this.socket.on("moverRemoto",function(datos){
 			mover(datos);
 		});
-		this.socket.on("votacion",function(data){
-			console.log(data);
+		this.socket.on("votacion",function(lista){
+			console.log(lista);
+			if(cli.estado!="fantasma"){
+				cw.mostrarModalVotacion(lista);
+			}
+			borrarTumbas();
 		});
 		this.socket.on("finalVotacion",function(data){
 			console.log(data);
+			//cw.cerrarModal()
+			$('#modalGeneral').modal('toggle');
+			//mostrar otro modal
+			cw.mostrarModalSimple(data.elegido);
+			if(cli.nick==data.elegido){
+				cli.estado="fantasma";
+			}
 		});
 		this.socket.on("haVotado",function(data){
 			console.log(data);
 		});
+		//this.socket.on("recibirEncargo",function(data){
+		//	console.log(data);
+		//	cli.impostor=data.impostor;
+		//	if(data.impostor){
+		//		$('#avisarImpostor').modal("show");
+		//		crearColision();
+		//	}else{
+		//		cli.encargo=data.encargo;
+		//	}
+		//});
 		this.socket.on("recibirEncargo",function(data){
 			console.log(data);
 			cli.impostor=data.impostor;
-			if(data.impostor){
-				$('#avisarImpostor').modal("show");
-				crearColision();
-			}else{
-				cli.encargo=data.encargo;
+			cli.encargo=data.encargo;
+			if (data.impostor){
+				//$('#avisarImpostor').modal("show");
+				cw.mostrarModalSimple('eres el impostor');
+				//crearColision();
 			}
+			cw.mostrarFuncion();
 		});
 		this.socket.on("final",function(data){
 			console.log(data);
+			finPartida(data);
 		});
 		this.socket.on("muereInocente",function(inocente){
 			console.log(inocente+" ha sido atacado");
@@ -144,6 +170,15 @@ function ClienteWS(){
 				cli.estado="fantasma";
 			}
 			dibujarMuereInocente(inocente);
+		});
+		this.socket.on("tareaRealizada",function(data){
+			console.log(data);
+			//tareasOn=true;
+		});
+		this.socket.on("hasAtacado",function(fase){
+			if (fase=="jugando"){
+				ataquesOn=true;
+			}
 		});
 	}
 
