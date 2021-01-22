@@ -19,12 +19,27 @@
 		    overflow-y:scroll;
 		    -webkit-overflow-scrolling: touch;
 		}
+		header {
+		  background-color: #FCEF8F;
+		  padding: 30px;
+		  text-align: center;
+		  font-size: 35px;
+		  color: black;
+		}
+		body {
+		  background-image: url('cliente/img/tuxemon-town.png');
+		  background-repeat: no-repeat;
+		  background-attachment: fixed;
+		  background-size: cover;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h3>Impostor App</h3>
-		<div class="row">
+		<header>
+		  <h3>Impostor App</h3>
+		</header>
+		<div class="col-sm-12" style="background-color:#FFFFFFE0; border:2px solid black;">
 	    <div class="col-sm-6">
 	      	<div id="crearPartida"></div>
   		    <div id="esperando"></div>
@@ -33,9 +48,23 @@
 	      <div id="listaPartidas"></div>
 		  <div id="listaEsperando"></div>
 	    </div>
-	    <div class="row">
-	    	<div id="funcionPartida"></div>
-	    	<div id="game-container"></div>
+	    <div class="col-sm-12">
+	    	<div class="col-sm-3">
+	    		<div class="row">
+		    		<div id="funcionPartida"></div>
+		    		<div id="abandonarGame"></div>
+	    		</div>
+	    	</div>
+	    	<div class="col-sm-7">
+	    		<div class="row">
+	    			<div id="game-container"></div>
+	    		</div>
+	    	</div>
+	    	<div class="col-sm-2">
+	    		<div class="row">
+	    			<div id="funcionTareas"></div>
+	    		</div>
+	    	</div>
 	    </div>
 	    <div class="modal" id="modalGeneral" tabindex="-1" role="dialog">
 		  <div class="modal-dialog" role="document">

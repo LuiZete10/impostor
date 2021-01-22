@@ -7,6 +7,8 @@ function ClienteWS(){
 	this.impostor=false;
 	this.estado;
 	this.encargo;
+	this.tareasGlobales=0;
+	this.percent=0;
 	this.ini=function(){
 		this.socket=io.connect();
 		this.lanzarSocketSrv();
@@ -18,6 +20,9 @@ function ClienteWS(){
 	this.unirAPartida=function(nick,codigo){
 		//this.nick=nick;
 		this.socket.emit("unirAPartida",nick,codigo);
+	}
+	this.abandonarPartida=function(nick,codigo){
+		this.socket.emit("abandonarPartida",nick,codigo);
 	}
 	this.iniciarPartida=function(){
 		this.socket.emit("iniciarPartida",this.nick,this.codigo);
@@ -81,12 +86,42 @@ function ClienteWS(){
 			cli.numJugador=data.numJugador;
 			cli.estado="vivo";
 			console.log(data);
+			cw.limpiarPantallaInicial();
 			cw.mostrarEsperandoRival();
 		});
+		this.socket.on('errorUnidoAPartida',function(nick){
+			console.log("No se pudo unir a la partida");
+			cw.mostrarListaPartidas(lista);
+			cw.mostrarModalError("Se ha producido un error al unirte a la partida");
+		});
 		this.socket.on('nuevoJugador',function(lista){
-			//console.log(nick+" se une a la partida");
 			cw.mostrarListaJugadores(lista);
-			//cli.iniciarPartida();
+		});
+		this.socket.on('fueraJugador',function(data){
+			if(data.nick==cli.nick){
+				cli.codigo=undefined;
+				cw.volverCrearPartida(cli.nick);
+				cli.listaPartidasDisponibles();
+				cw.mostrarModalSimple("Has abandonado la partida");
+			} else{
+				cw.mostrarListaJugadores(data.lista);
+			}
+		});
+		this.socket.on('fueraJugadorJuego',function(nick){
+			if(nick==cli.nick){
+				cli.codigo=undefined;
+				cw.volverCrearPartida(cli.nick);
+				cli.listaPartidasDisponibles();
+				cw.mostrarModalSimple("Has abandonado la partida");
+			} else{
+				dibujarAbandono(nick);
+			}
+		});
+		this.socket.on("actualizarOwner",function(nickOwner){
+			if(cli.nick==nickOwner){
+				cli.owner = true;
+				cw.mostrarEsperandoRival();
+			}
 		});
 		this.socket.on('partidaIniciada',function(fase){
 			console.log("Partida en fase: "+fase);
@@ -94,7 +129,9 @@ function ClienteWS(){
 				cli.obtenerEncargo();
 				cli.estado="vivo";
 				cw.limpiar();
+				cw.mostrarPantallaJuego();
 				lanzarJuego();
+				cw.mostrarAbandonar();
 			}
 		});
 		this.socket.on('recibirListaPartidasDisponibles',function(lista){
@@ -139,16 +176,6 @@ function ClienteWS(){
 		this.socket.on("haVotado",function(data){
 			console.log(data);
 		});
-		//this.socket.on("recibirEncargo",function(data){
-		//	console.log(data);
-		//	cli.impostor=data.impostor;
-		//	if(data.impostor){
-		//		$('#avisarImpostor').modal("show");
-		//		crearColision();
-		//	}else{
-		//		cli.encargo=data.encargo;
-		//	}
-		//});
 		this.socket.on("recibirEncargo",function(data){
 			console.log(data);
 			cli.impostor=data.impostor;
@@ -159,10 +186,14 @@ function ClienteWS(){
 				//crearColision();
 			}
 			cw.mostrarFuncion();
+			cw.mostrarTarea();
 		});
 		this.socket.on("final",function(data){
-			console.log(data);
+			cli.codigo=undefined;
 			finPartida(data);
+			resetFinal()
+			cw.volverCrearPartida(cli.nick);
+			cli.listaPartidasDisponibles();
 		});
 		this.socket.on("muereInocente",function(inocente){
 			console.log(inocente+" ha sido atacado");
@@ -171,9 +202,13 @@ function ClienteWS(){
 			}
 			dibujarMuereInocente(inocente);
 		});
-		this.socket.on("tareaRealizada",function(data){
-			console.log(data);
-			//tareasOn=true;
+		this.socket.on("tareaRealizada",function(percent){
+			cli.percent = percent;
+		});
+		this.socket.on("refrescarTareas",function(total){
+			cli.tareasGlobales = total;
+			cw.mostrarTarea();
+			tareasOn=true;
 		});
 		this.socket.on("hasAtacado",function(fase){
 			if (fase=="jugando"){

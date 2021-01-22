@@ -186,13 +186,13 @@ describe("El juego del impostor", function() {
 		it("realizar tareas",function(){
 			var partida=juego.partidas[codigo];
 			expect(partida.obtenerPercentGlobal()).toEqual(0);
-			for(var i=0;i<9;i++){
+			for(var i=0;i<2;i++){
 				for(var key in partida.usuarios){
 
 					partida.usuarios[key].realizarTarea();
 				}
 				expect(partida.fase.nombre).toEqual("jugando");
-				expect(partida.obtenerPercentGlobal()).toEqual((i+1)*100/10);
+				expect(partida.obtenerPercentGlobal()).toEqual((Math.round(((i+1)*100/3)*100))/100);
 			}
 			for(var key in partida.usuarios){
 					partida.usuarios[key].realizarTarea();

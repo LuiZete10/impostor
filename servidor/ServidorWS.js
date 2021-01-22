@@ -23,18 +23,56 @@ function ServidorWS(){
 				console.log('usuario: '+nick+" crea partida codigo: "+codigo);	
 		       	cli.enviarRemitente(socket,"partidaCreada",{"codigo":codigo,"owner":nick});		        		        
 		    	var lista=juego.listaPartidasDisponibles();
-		    	cli.enviarGlobal(socket,"recibirListaPartidasDisponibles",lista); 
+		    	cli.enviarGlobal(socket,"recibirListaPartidasDisponibles",lista);
+		    	var lista=juego.obtenerListaJugadores(codigo);
+			    cli.enviarRemitente(socket, "nuevoJugador",lista);
 		    });
 		    socket.on('unirAPartida',function(nick,codigo){
 		    	//nick o codigo nulo
 		    	var res=juego.unirAPartida(codigo,nick);
 		    	socket.join(codigo);
-		    	var owner=juego.partidas[codigo].nickOwner;
-		  		console.log("Usuario "+res.nick+" se une a partida "+res.codigo);
-		    	cli.enviarRemitente(socket,"unidoAPartida",res);
-		    	var lista=juego.obtenerListaJugadores(codigo);
-		    	//cli.enviarATodosMenosRemitente(socket,codigo,"nuevoJugador",res.nick);
-		    	cli.enviarATodos(io, codigo, "nuevoJugador",lista);
+		    	if(res!=undefined){
+		    		console.log("Usuario "+res.nick+" se une a partida "+res.codigo);
+			    	cli.enviarRemitente(socket,"unidoAPartida",res);
+			    	var lista=juego.obtenerListaJugadores(codigo);
+			    	cli.enviarATodos(io, codigo, "nuevoJugador",lista);
+		    	}else{
+					console.log("Usuario "+nick+" no se ha podido unir a la partida "+codigo);
+					cli.enviarRemitente(socket,"errorUnidoAPartida",nick);
+		    	}
+		    });
+
+		    socket.on('abandonarPartida',function(nick,codigo){
+		    	console.log(nick + " va a abandonar la partida " + codigo);
+		    	var fase=juego.partidas[codigo].fase.nombre;
+		    	juego.abandonarPartida(codigo,nick);
+		    	if(juego.partidas[codigo]!=undefined){
+		    		fase=juego.partidas[codigo].fase.nombre;
+		    		if(fase=="final"){
+		    			if(juego.partidas[codigo].gananImpostores()){
+		    				console.log("Ganan los impostores, la partida " + codigo);
+		    				cli.enviarATodos(io, codigo, "final","ganan impostores");
+		    			}else{
+		    				console.log("Ganan los ciudadanos, la partida " + codigo);
+		    				cli.enviarATodos(io, codigo, "final","ganan ciudadanos");
+		    			}
+		    			cli.enviarRemitente(socket,"fueraJugadorJuego",nick);
+			    	}else if (fase=="jugando" || fase=="votacion"){
+			    		cli.enviarATodos(io, codigo, "fueraJugadorJuego",nick);
+			    	} else {
+			    		console.log("Nuevo owner: "+juego.partidas[codigo].nickOwner);
+			    		cli.enviarATodos(io, codigo, "actualizarOwner",juego.partidas[codigo].nickOwner);
+			    		var lista=juego.obtenerListaJugadores(codigo);
+			    		cli.enviarATodos(io, codigo, "fueraJugador",{"lista":lista,"nick":nick});
+			    		
+			    	}
+		    	}else{
+		    		if (fase=="jugando" || fase=="votacion"){
+		    			cli.enviarRemitente(socket,"fueraJugadorJuego",nick);
+		    		} else {
+		    			cli.enviarRemitente(socket,"fueraJugador",{"lista":undefined,"nick":nick})
+		    		}
+		    	}
 		    });
 
 		    socket.on('iniciarPartida',function(nick,codigo){
@@ -87,8 +125,10 @@ function ServidorWS(){
 		    		console.log("Resultado: "+ partida.elegido);
 		    		if (data.fase=="final"){
 			    		if(partida.gananImpostores()){
+			    			console.log("Ganan los impostores, la partida " + codigo);
 		    				cli.enviarATodos(io, codigo, "final","ganan impostores");
 		    			}else{
+		    				console.log("Ganan los ciudadanos, la partida " + codigo);
 		    				cli.enviarATodos(io, codigo, "final","ganan ciudadanos");
 		    			}
 			    	}else{
@@ -109,8 +149,10 @@ function ServidorWS(){
 		    		console.log("Resultado: "+ partida.elegido);
 		    		if (data.fase=="final"){
 		    			if(partida.gananImpostores()){
+		    				console.log("Ganan los impostores, la partida " + codigo);
 		    				cli.enviarATodos(io, codigo, "final","ganan impostores");
 		    			}else{
+		    				console.log("Ganan los ciudadanos, la partida " + codigo);
 		    				cli.enviarATodos(io, codigo, "final","ganan ciudadanos");
 		    			}
 			    	}else{
@@ -137,6 +179,7 @@ function ServidorWS(){
 		    	cli.enviarATodos(io,codigo,"muereInocente",inocente);
 		    	cli.enviarRemitente(socket,"hasAtacado",fase);
 			    if (fase=="final"){
+			    	console.log("Ganan los impostores, la partida " + codigo);
 			    	cli.enviarATodos(io, codigo, "final","ganan impostores");
 			    }
 		    });
@@ -145,10 +188,13 @@ function ServidorWS(){
 		    	var partida=juego.partidas[codigo];
 		    	juego.realizarTarea(nick,codigo);
 		    	var percent=partida.obtenerPercentTarea(nick);
-		    	var global=partida.obtenerPercentGlobal();
-				cli.enviarRemitente(socket,"tareaRealizada",{"percent":percent,"goblal":global});			    	
+		    	var total=partida.obtenerPercentGlobal();
+		    	console.log(nick + " realizo una tarea, lleva un " + percent + " propio y globalmente, " + total);
+				cli.enviarRemitente(socket,"tareaRealizada",percent);
+				cli.enviarATodos(io, codigo, "refrescarTareas",total);		    	
 		    	var fase=partida.fase.nombre;
 		    	if (fase=="final"){
+		    		console.log("Ganan los ciudadanos, la partida " + codigo);
 			    	cli.enviarATodos(io, codigo, "final","ganan ciudadanos");
 			    }
 		    });
