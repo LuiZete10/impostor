@@ -172,6 +172,7 @@ function ClienteWS(){
 			if(cli.nick==data.elegido){
 				cli.estado="fantasma";
 			}
+			dibujarMuereInocente();
 		});
 		this.socket.on("haVotado",function(data){
 			console.log(data);

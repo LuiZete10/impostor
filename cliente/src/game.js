@@ -1086,8 +1086,35 @@ function lanzarJuego(){
     muertos.add(muerto);
     if(ws.nick!=inocente){
       jugadores[inocente].visible=false;
+    }else{
+      player.anims.play(recursos[numJugador].sprite+"-back-walk-fan", true);
+      //console.log(remotos.children.entries[0]);
+      //for(i=0;i<remotos.children.size;i++){
+      //  remotos.children.entries[i].visible=true;
+      //  console.log(remotos.children.entries[i]);
+      //  remotos.children.entries[i].anims.play(remotos.children.entries[i].numJugador+"-back-walk-fan", true);
+      //}
+    }
+    if(ws.encargo=="Vidente"){
+      jugadores[inocente].visible=true;
     }
     crear.physics.add.overlap(player,muertos,votacion);
+  }
+
+  function dibujarMuereInocenteVotacion(inocente){
+    if(ws.nick!=inocente){
+      jugadores[inocente].visible=false;
+    }else{
+      player.anims.play(recursos[numJugador].sprite+"-back-walk-fan", true);
+      //for(i=0;i<remotos.children.size;i++){
+      //  remotos.children.entries[i].visible=true;
+      //  console.log(remotos.children.entries[i]);
+      //  remotos.children.entries[i].anims.play(remotos.children.entries[i].numJugador+"-back-walk-fan", true);
+      //}
+    }
+    if(ws.encargo=="Vidente"){
+      jugadores[inocente].visible=true;
+    }
   }
 
   function dibujarAbandono(nick){
@@ -1157,25 +1184,39 @@ function lanzarJuego(){
     const speed = 175;
     const nombre=recursos[numJugador].sprite;
     if (remoto){
-      if(datos.estado!="fantasma"||ws.estado=="fantasma"){
+      if(datos.estado!="fantasma"||ws.estado=="fantasma"||ws.encargo=="Vidente"){
         remoto.body.setVelocity(0);
         remoto.setX(x);
         remoto.setY(y);
         remoto.body.velocity.normalize().scale(speed);
-        if (direccion=="left") {
-          remoto.anims.play(nombre+"-left-walk", true);
-        } else if (direccion=="right") {
-          remoto.anims.play(nombre+"-right-walk", true);
-        } else if (direccion=="up") {
-          remoto.anims.play(nombre+"-back-walk", true);
-        } else if (direccion=="down") {
-          remoto.anims.play(nombre+"-front-walk", true);
-        } else {
-          remoto.anims.stop();
+        if(datos.estado=="vivo"){
+          if (direccion=="left") {
+            remoto.anims.play(nombre+"-left-walk", true);
+          } else if (direccion=="right") {
+            remoto.anims.play(nombre+"-right-walk", true);
+          } else if (direccion=="up") {
+            remoto.anims.play(nombre+"-back-walk", true);
+          } else if (direccion=="down") {
+            remoto.anims.play(nombre+"-front-walk", true);
+          } else {
+            remoto.anims.stop();
+          }
+        }else{
+          if (direccion=="left") {
+            remoto.anims.play(nombre+"-left-walk-fan", true);
+          } else if (direccion=="right") {
+            remoto.anims.play(nombre+"-right-walk-fan", true);
+          } else if (direccion=="up") {
+            remoto.anims.play(nombre+"-back-walk-fan", true);
+          } else if (direccion=="down") {
+            remoto.anims.play(nombre+"-front-walk-fan", true);
+          } else {
+            remoto.anims.stop();
+          }
         }
-      } else {
-        remoto.visible=false;
-      }
+      } //else {
+        //remoto.visible=false;
+      //}
     }
   }
 
@@ -1235,22 +1276,31 @@ function lanzarJuego(){
       ws.movimiento(direccion,player.x,player.y);
 
       // Update the animation last and give left/right animations precedence over up/down animations
-      if (cursors.left.isDown) {
-        player.anims.play(nombre+"-left-walk", true);
-      } else if (cursors.right.isDown) {
-        player.anims.play(nombre+"-right-walk", true);
-      } else if (cursors.up.isDown) {
-        player.anims.play(nombre+"-back-walk", true);
-      } else if (cursors.down.isDown) {
-        player.anims.play(nombre+"-front-walk", true);
-      } else {
-        player.anims.stop();
-
-        // If we were moving, pick and idle frame to use
-        // if (prevVelocity.x < 0) player.setTexture("gabe", "gabe-left-walk");
-        // else if (prevVelocity.x > 0) player.setTexture("gabe", "gabe-right-walk");
-        // else if (prevVelocity.y < 0) player.setTexture("gabe", "gabe-back-walk");
-        // else if (prevVelocity.y > 0) player.setTexture("gabe", "gabe-front-walk");
+      if(ws.estado=="vivo"){
+        if (cursors.left.isDown) {
+          player.anims.play(nombre+"-left-walk", true);
+        } else if (cursors.right.isDown) {
+          player.anims.play(nombre+"-right-walk", true);
+        } else if (cursors.up.isDown) {
+          player.anims.play(nombre+"-back-walk", true);
+        } else if (cursors.down.isDown) {
+          player.anims.play(nombre+"-front-walk", true);
+        } else {
+          player.anims.stop();
+        }
+      }else{
+        if (cursors.left.isDown) {
+          player.anims.play(nombre+"-left-walk-fan", true);
+        } else if (cursors.right.isDown) {
+          player.anims.play(nombre+"-right-walk-fan", true);
+        } else if (cursors.up.isDown) {
+          player.anims.play(nombre+"-back-walk-fan", true);
+        } else if (cursors.down.isDown) {
+          player.anims.play(nombre+"-front-walk-fan", true);
+        } else {
+          player.anims.stop();
+        }
       }
+      
     }
   }
