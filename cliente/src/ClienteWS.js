@@ -9,6 +9,7 @@ function ClienteWS(){
 	this.encargo;
 	this.tareasGlobales=0;
 	this.percent=0;
+	this.numeroMapa;
 	this.ini=function(){
 		this.socket=io.connect();
 		this.lanzarSocketSrv();
@@ -123,13 +124,14 @@ function ClienteWS(){
 				cw.mostrarEsperandoRival();
 			}
 		});
-		this.socket.on('partidaIniciada',function(fase){
-			console.log("Partida en fase: "+fase);
-			if (fase=="jugando"){
+		this.socket.on('partidaIniciada',function(data){
+			console.log("Partida en fase: "+data.fase);
+			if (data.fase=="jugando"){
 				cli.obtenerEncargo();
 				cli.estado="vivo";
 				cw.limpiar();
 				cw.mostrarPantallaJuego();
+				cli.numeroMapa = data.numeroMapa;
 				lanzarJuego();
 				cw.mostrarAbandonar();
 			}

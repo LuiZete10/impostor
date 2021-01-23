@@ -109,6 +109,9 @@ function Juego(){
 		var partida = this.partidas[codigo];
 		partida.realizarTarea(nick);
 	}
+	this.obtenerMapaAleatorio=function(numeroBajo,numeroAlto){
+		return randomInt(numeroBajo,numeroAlto);
+	}
 }
 
 function Partida(num,owner,codigo,juego){

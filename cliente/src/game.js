@@ -55,7 +55,7 @@ function lanzarJuego(){
     //this.load.image("tiles", "cliente/assets/tilesets/tuxmon-sample-32px-extruded.png");
     this.load.image("tiles", "cliente/assets/tilesets/Serene_Village_32x32.png");
     //this.load.tilemapTiledJSON("map", "cliente/assets/tilemaps/tuxemon-town.json");
-    this.load.tilemapTiledJSON("map", "cliente/assets/tilemaps/mapa1.json");
+    this.load.tilemapTiledJSON("map", "cliente/assets/tilemaps/mapa"+ws.numeroMapa+"retro.json");
 
     // An atlas is a way to pack multiple images together into one texture. I'm using it to load all
     // the player animations (walking left, walking right, etc.) in one image. For more info see:
@@ -95,16 +95,20 @@ function lanzarJuego(){
 
     // capaTareas = map.createStaticLayer("capaTareas", tileset, 0, 0);
     if(ws.encargo=="Jardinero"){
-      capaTareas = map.createStaticLayer("CapaTareasJardinero", tileset, 0, 0);
+      //capaTareas = map.createStaticLayer("CapaTareasJardinero", tileset, 0, 0);
+      capaTareas = map.createDynamicLayer("CapaTareasJardinero", tileset, 0, 0);
       capaTareas.setCollisionByProperty({ collides: true });
     }else if(ws.encargo=="Barrendero"){
-      capaTareas = map.createStaticLayer("CapaTareasBarrendero", tileset, 0, 0);
+      //capaTareas = map.createStaticLayer("CapaTareasBarrendero", tileset, 0, 0);
+      capaTareas = map.createDynamicLayer("CapaTareasBarrendero", tileset, 0, 0);
       capaTareas.setCollisionByProperty({ collides: true });
     }else if(ws.encargo=="Cartero"){
-      capaTareas = map.createStaticLayer("CapaTareasCartero", tileset, 0, 0);
+      //capaTareas = map.createStaticLayer("CapaTareasCartero", tileset, 0, 0);
+      capaTareas = map.createDynamicLayer("CapaTareasCartero", tileset, 0, 0);
       capaTareas.setCollisionByProperty({ collides: true });
     }else if(ws.encargo=="Vidente"){
-      capaTareas = map.createStaticLayer("CapaTareasVidente", tileset, 0, 0);
+      //capaTareas = map.createStaticLayer("CapaTareasVidente", tileset, 0, 0);
+      capaTareas = map.createDynamicLayer("CapaTareasVidente", tileset, 0, 0);
       capaTareas.setCollisionByProperty({ collides: true });
     }
     worldLayer.setCollisionByProperty({ collides: true });
@@ -1141,9 +1145,9 @@ function lanzarJuego(){
   function tareas(sprite,objeto){
     if (ws.encargo==objeto.properties.tarea && objeto.properties.done==false && teclaT.isDown){
       tareasOn=false;      
-      console.log("realizar tarea de "+ws.encargo);
       ws.realizarTarea();
       objeto.properties.done=true;
+      map.removeTileAt(objeto.x,objeto.y,null,true,capaTareas);
     }
     if (ws.encargo==objeto.properties.tarea && objeto.properties.done==true && teclaT.isDown){
       cw.mostrarModalTarea(ws.encargo);

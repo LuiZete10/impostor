@@ -80,9 +80,10 @@ function ServidorWS(){
 		    	//controlar si nick es el owner
 		    	//cli.enviarATodos(socket,codigo,"partidaIniciada",fase);
 		    	juego.iniciarPartida(nick,codigo);
+		    	var numeroMapa = juego.obtenerMapaAleatorio(1,4);
 		    	var fase=juego.partidas[codigo].fase.nombre;
 		    	if (fase=="jugando"){
-			    	cli.enviarATodos(io, codigo, "partidaIniciada",fase);
+			    	cli.enviarATodos(io, codigo, "partidaIniciada",{"fase":fase,"numeroMapa":numeroMapa});
 			    }
 		    });
 
