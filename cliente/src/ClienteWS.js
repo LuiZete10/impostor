@@ -10,6 +10,7 @@ function ClienteWS(){
 	this.tareasGlobales=0;
 	this.percent=0;
 	this.numeroMapa;
+	this.modoMapa="retro";
 	this.ini=function(){
 		this.socket=io.connect();
 		this.lanzarSocketSrv();
@@ -26,7 +27,7 @@ function ClienteWS(){
 		this.socket.emit("abandonarPartida",nick,codigo);
 	}
 	this.iniciarPartida=function(){
-		this.socket.emit("iniciarPartida",this.nick,this.codigo);
+		this.socket.emit("iniciarPartida",this.nick,this.codigo,this.modoMapa);
 	}
 	this.listaPartidasDisponibles=function(){
 		this.socket.emit("listaPartidasDisponibles");
@@ -131,6 +132,7 @@ function ClienteWS(){
 				cli.estado="vivo";
 				cw.limpiar();
 				cw.mostrarPantallaJuego();
+				cli.modoMapa = data.modoMapa;
 				cli.numeroMapa = data.numeroMapa;
 				lanzarJuego();
 				cw.mostrarAbandonar();

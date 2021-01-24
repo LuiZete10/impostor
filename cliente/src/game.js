@@ -53,9 +53,21 @@ function lanzarJuego(){
   function preload() {
     
     //this.load.image("tiles", "cliente/assets/tilesets/tuxmon-sample-32px-extruded.png");
-    this.load.image("tiles", "cliente/assets/tilesets/Serene_Village_32x32.png");
-    //this.load.tilemapTiledJSON("map", "cliente/assets/tilemaps/tuxemon-town.json");
-    this.load.tilemapTiledJSON("map", "cliente/assets/tilemaps/mapa"+ws.numeroMapa+"retro.json");
+    
+
+    if(ws.modoMapa=="hd"){
+      this.load.image("tiles", "cliente/assets/tilesets/tilesetTotal.png");
+      this.load.tilemapTiledJSON("map", "cliente/assets/tilemaps/mapa1hd.json");
+    }else{
+      this.load.image("tiles", "cliente/assets/tilesets/Serene_Village_32x32.png");
+      this.load.tilemapTiledJSON("map", "cliente/assets/tilemaps/mapa"+ws.numeroMapa+"retro.json");
+    }
+    
+    
+
+
+    
+    
 
     // An atlas is a way to pack multiple images together into one texture. I'm using it to load all
     // the player animations (walking left, walking right, etc.) in one image. For more info see:
@@ -80,10 +92,13 @@ function lanzarJuego(){
     // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
     // Phaser's cache (i.e. the name you used in preload)
     //const tileset = map.addTilesetImage("tuxmon-sample-32px-extruded", "tiles");
-    const tileset = map.addTilesetImage("Serene_Village_32x32", "tiles");
+    var tileset;
+    if(ws.modoMapa=="hd"){
+      tileset = map.addTilesetImage("tilesetTotal", "tiles");
+    }else{
+      tileset = map.addTilesetImage("Serene_Village_32x32", "tiles");
+    }
 
-    
-    
     // Parameters: layer name (or index) from Tiled, tileset, x, y
     const belowLayer = map.createStaticLayer("Below Player", tileset, 0, 0);
     worldLayer = map.createStaticLayer("World", tileset, 0, 0);

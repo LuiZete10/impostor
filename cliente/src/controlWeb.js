@@ -113,12 +113,22 @@ function ControlWeb($){
 	    var cadena='<div id="mER"><h3>Esperando rival</h3>';
 	    cadena=cadena+'<img id="gif" src="cliente/img/loader.gif"><br>';
 	    if (ws.owner){
-	    	cadena=cadena+'<div class="form-group">';
-			cadena=cadena+'<input type="button" class="btn btn-primary btn-md" id="iniciar" value="Iniciar partida">';   
+	    	cadena=cadena+'<div class="row">';
+	    	cadena =cadena+'<div>';
+	    	cadena =cadena+'<div class="input-group" style="border:2px solid black;float:left;margin:7px; margin-left:17px">';
+		  	cadena=cadena+'<div style="float:left;margin:10px;margin-left:25px;"><input type="radio" name="optradio" value="retro" checked="true"> Mapas Retro</div>';
+		  	cadena=cadena+'<div style="float:left;margin:10px;margin-right:25px;"><input type="radio" name="optradio" value="hd"> Mapa HD</div>';
+		  	cadena=cadena+'</div>';
+		  	cadena=cadena+'<input style="float:left;margin:12px;" type="button" class="btn btn-primary btn-md" id="iniciar" value="Iniciar partida">';   
+			cadena=cadena+'</div>';
+			
 			cadena=cadena+'</div>';
 		}
 		cadena=cadena+'</div>';
 	    $('#esperando').append(cadena);
+	    $('.input-group input').on('change', function() {
+		   ws.modoMapa=$('input[name=optradio]:checked', '.input-group').val(); 
+		});
 	    $('#iniciar').click(function(){
 	    	ws.iniciarPartida();
 	    });
@@ -181,6 +191,8 @@ function ControlWeb($){
 		$('#modalGeneral').modal("show");
 	}
 
+
+
 	this.mostrarModalVotacion=function(lista){
 		this.limpiarModal();
 		var cadena='<div id="votacion"><h3>Votación</h3>';		
@@ -188,7 +200,7 @@ function ControlWeb($){
 	  	 for(var i=0;i<lista.length;i++){
 	  		cadena=cadena+'<div><input type="radio" name="optradio" value="'+lista[i].nick+'"> '+lista[i].nick+'</div>';
 	  	}
-	  	cadena=cadena+'<div><input type="radio" name="optradio" value="-1"> Saltar voto</div>';
+	  	cadena=cadena+'<div><input type="radio" name="optradio" value="-1" checked="true"> Saltar voto</div>';
 		cadena=cadena+'</div>';
 
 		$("#contenidoModal").append(cadena);

@@ -75,7 +75,7 @@ function ServidorWS(){
 		    	}
 		    });
 
-		    socket.on('iniciarPartida',function(nick,codigo){
+		    socket.on('iniciarPartida',function(nick,codigo,modoMapa){
 		    	//iniciar partida ToDo
 		    	//controlar si nick es el owner
 		    	//cli.enviarATodos(socket,codigo,"partidaIniciada",fase);
@@ -83,7 +83,7 @@ function ServidorWS(){
 		    	var numeroMapa = juego.obtenerMapaAleatorio(1,4);
 		    	var fase=juego.partidas[codigo].fase.nombre;
 		    	if (fase=="jugando"){
-			    	cli.enviarATodos(io, codigo, "partidaIniciada",{"fase":fase,"numeroMapa":numeroMapa});
+			    	cli.enviarATodos(io, codigo, "partidaIniciada",{"fase":fase,"numeroMapa":numeroMapa,"modoMapa":modoMapa});
 			    }
 		    });
 
