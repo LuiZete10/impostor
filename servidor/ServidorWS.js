@@ -38,7 +38,8 @@ function ServidorWS(){
 			    	cli.enviarATodos(io, codigo, "nuevoJugador",lista);
 		    	}else{
 					console.log("Usuario "+nick+" no se ha podido unir a la partida "+codigo);
-					cli.enviarRemitente(socket,"errorUnidoAPartida",nick);
+					var lista=juego.listaPartidas();
+					cli.enviarRemitente(socket,"errorUnidoAPartida",lista);
 		    	}
 		    });
 
@@ -137,7 +138,7 @@ function ServidorWS(){
 			    	}
 		    	}
 		    	else{
-		    		cli.enviarATodos(io, codigo,"haVotado",partida.listaHanVotado());		    	
+		    		cli.enviarRemitente(socket,"haVotado",{"listaHanVotado":partida.listaHanVotado(),"msg":"Has saltado el voto"});		    	
 		    	}
 		    });
 
@@ -162,7 +163,7 @@ function ServidorWS(){
 			    	//partida.reiniciarContadoresVotaciones();
 		    	}
 		    	else{
-		    		cli.enviarATodos(io, codigo,"haVotado",partida.listaHanVotado());		    	
+		    		cli.enviarRemitente(socket,"haVotado",{"listaHanVotado":partida.listaHanVotado(),"msg":"Has votado a "+sospechoso});		    	
 		    	}
 		    });
 

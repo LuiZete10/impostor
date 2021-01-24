@@ -5,7 +5,7 @@ function ControlWeb($){
 		var cadena='<div id="mostrarCP"><h3>Crear partida</h3>';
 		cadena=cadena+'<div class="form-group">';
 		cadena=cadena+'<label for="nick">Nick:</label>';
-		cadena=cadena+'<input type="text" class="form-control" id="nick">';
+		cadena=cadena+'<input type="text" class="form-control" id="nick" value="">';
 		cadena=cadena+'</div>';
 		cadena=cadena+'<div class="form-group">';
 		cadena=cadena+'<label for="num">Número:</label>';
@@ -21,8 +21,12 @@ function ControlWeb($){
 		$('#btnCrear').on('click',function(){
 			var nick=$('#nick').val();
 			var num=$("#num").val();
-			$("#mostrarCP").remove();
-			ws.crearPartida(nick,num);
+			if(nick!='' && num){
+				$("#mostrarCP").remove();
+				ws.crearPartida(nick,num);
+			}else{
+	        	cw.mostrarModalError("No se ha introducido nick");
+	        }
 		});
 	}
 
@@ -52,8 +56,7 @@ function ControlWeb($){
 			var num=$("#num").val();
 			$("#mostrarCP").remove();
 			if (nick!=""){
-				//revisar
-	            ws.crearPartida(nick,num);
+				ws.crearPartida(nick,num);
 	        }else{
 	        	cw.mostrarModalError("No se ha introducido nick");
 	        }
@@ -195,30 +198,38 @@ function ControlWeb($){
 
 	this.mostrarModalVotacion=function(lista){
 		this.limpiarModal();
-		var cadena='<div id="votacion"><h3>Votación</h3>';		
+		var cadena='<div id="votacion" style="padding-left:20px"><h3>Votación</h3>';		
 		cadena =cadena+'<div class="input-group">';
-	  	 for(var i=0;i<lista.length;i++){
-	  		cadena=cadena+'<div><input type="radio" name="optradio" value="'+lista[i].nick+'"> '+lista[i].nick+'</div>';
+		
+	  	for(var i=0;i<lista.length;i++){
+	  		cadena=cadena+'<div style="float:left;margin-right:30px">';
+	  		cadena=cadena+'<img src="cliente/assets/images/personaje'+lista[i].numJugador+'.png"><strong>'+lista[i].nick+'</strong><br>';
+	  		cadena=cadena+'<button type="button" id="votar' + lista[i].numJugador + '" class="btn btn-secondary" name="'+lista[i].nick+'">Votar</button>';
+	  		//cadena=cadena+'<input type="radio" name="optradio" value="'+lista[i].nick+'"> '+lista[i].nick+'';
+	  		cadena=cadena+'</div>';
 	  	}
-	  	cadena=cadena+'<div><input type="radio" name="optradio" value="-1" checked="true"> Saltar voto</div>';
+	  	//cadena=cadena+'<button type="button" id="SaltarVoto" class="btn btn-secondary" value="-1">Saltar Voto</button>';
+	  	//cadena=cadena+'<div><input type="radio" name="optradio" value="-1" checked="true"> Saltar voto</div>';
 		cadena=cadena+'</div>';
 
 		$("#contenidoModal").append(cadena);
-		$("#pie").append('<button type="button" id="votar" class="btn btn-secondary" >Votar</button>');
+		$("#pie").append('<button type="button" id="SaltarVoto" class="btn btn-secondary" >Saltar Voto</button>');
 		$('#modalGeneral').modal("show");
 
-		var sospechoso=undefined;
-		$('.input-group input').on('change', function() {
-		   sospechoso=$('input[name=optradio]:checked', '.input-group').val(); 
-		});
-
-		$('#votar').click(function(){
-	    	if (sospechoso!="-1"){
-		    	ws.votar(sospechoso);
-		    }
-		    else{
-	    		ws.saltarVoto();
-	    	}
+		//var sospechoso=undefined;
+		//$('.input-group input').on('change', function() {
+		//   sospechoso=$('input[name=optradio]:checked', '.input-group').val(); 
+		//});
+		for(var j=0;j<lista.length;j++){
+			$('#votar'+lista[j].numJugador).on('click',function(){
+		  			console.log("Vas a votar");
+					var sospechoso=this.name;
+		  			console.log("Votando a "+sospechoso);
+			  		ws.votar(sospechoso);
+		    });
+		}
+		$('#SaltarVoto').click(function(){
+    		ws.saltarVoto();
 	    });
 
 	}
@@ -230,6 +241,7 @@ function ControlWeb($){
 		$('#cerrar').remove();
 		$('#votacion').remove();
 		$('#votar').remove();
+		$('#SaltarVoto').remove();
 	}
 
 	this.mostrarFuncion=function(){

@@ -485,17 +485,13 @@ function Votacion(){
 	this.nombre="votacion";
 	this.agregarUsuario=function(nick,partida){}
 	this.iniciarPartida=function(partida){}
-	this.abandonarPartida=function(nick,partida){
-		partida.puedeAbandonarPartida(nick);
-		partida.comprobarFinal();
-	}
+	this.abandonarPartida=function(nick,partida){}
 	this.atacar=function(inocente){}
 	this.realizarTarea=function(nick,partida){}
 	this.lanzarVotacion=function(){}
 	this.votar=function(sospechoso,partida){
 		partida.puedeVotar(sospechoso);
-	}
-}
+	}}
 
 function Final(){
 	this.nombre="final";

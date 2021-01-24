@@ -91,7 +91,7 @@ function ClienteWS(){
 			cw.limpiarPantallaInicial();
 			cw.mostrarEsperandoRival();
 		});
-		this.socket.on('errorUnidoAPartida',function(nick){
+		this.socket.on('errorUnidoAPartida',function(lista){
 			console.log("No se pudo unir a la partida");
 			cw.mostrarListaPartidas(lista);
 			cw.mostrarModalError("Se ha producido un error al unirte a la partida");
@@ -102,6 +102,7 @@ function ClienteWS(){
 		this.socket.on('fueraJugador',function(data){
 			if(data.nick==cli.nick){
 				cli.codigo=undefined;
+				cli.owner=false;
 				cw.volverCrearPartida(cli.nick);
 				cli.listaPartidasDisponibles();
 				cw.mostrarModalSimple("Has abandonado la partida");
@@ -112,6 +113,7 @@ function ClienteWS(){
 		this.socket.on('fueraJugadorJuego',function(nick){
 			if(nick==cli.nick){
 				cli.codigo=undefined;
+				cli.owner=false;
 				cw.volverCrearPartida(cli.nick);
 				cli.listaPartidasDisponibles();
 				cw.mostrarModalSimple("Has abandonado la partida");
@@ -176,10 +178,13 @@ function ClienteWS(){
 			if(cli.nick==data.elegido){
 				cli.estado="fantasma";
 			}
-			dibujarMuereInocente();
+			if(data.elegido!="no hay nadie elegido"){
+				dibujarMuereInocente();
+			}
 		});
 		this.socket.on("haVotado",function(data){
-			console.log(data);
+			cw.mostrarModalSimple(data.msg);
+			console.log(data.listaHanVotado);
 		});
 		this.socket.on("recibirEncargo",function(data){
 			console.log(data);
